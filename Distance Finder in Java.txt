@@ -1,0 +1,74 @@
+//Implementation of the code in Java
+package cnassignment;
+import java.util.*;
+class MapNavigator {
+private Map<String, Map<String, Integer>> map;
+public MapNavigator() {
+map = new HashMap<>();
+}
+public void addLocation(String location) {
+map.put(location, new HashMap<>());
+}
+public void addConnection(String source, String destination, int distance) 
+{
+map.get(source).put(destination, distance);
+map.get(destination).put(source, distance);
+}
+public List<String> findShortestPath(String source, String destination) {
+Map<String, Integer> distances = new HashMap<>();
+Map<String, String> previous = new HashMap<>();
+PriorityQueue<String> queue = new 
+PriorityQueue<>(Comparator.comparingInt(distances::get));
+for (String location : map.keySet()) {
+distances.put(location, Integer.MAX_VALUE);
+previous.put(location, null);
+
+}
+distances.put(source, 0);
+queue.add(source);
+while (!queue.isEmpty()) {
+String current = queue.poll();
+if (current.equals(destination))
+break;
+for (String neighbor : map.get(current).keySet()) {
+int distance = map.get(current).get(neighbor);
+int totalDistance = distances.get(current) + distance;
+if (totalDistance < distances.get(neighbor)) {
+distances.put(neighbor, totalDistance);
+previous.put(neighbor, current);
+queue.add(neighbor);
+}
+}
+}
+List<String> path = new ArrayList<>();
+String current = destination;
+while (current != null) {
+path.add(0, current);
+current = previous.get(current);
+}
+return path;
+}
+}
+public class distance_finder {
+		 public static void main(String[] args) {
+		 MapNavigator navigator = new MapNavigator();
+		
+		 // Add locations
+		 navigator.addLocation("A");
+		 navigator.addLocation("B");
+		 navigator.addLocation("C");
+		 navigator.addLocation("D");
+		 navigator.addLocation("E");
+		 // Add connections
+		 navigator.addConnection("A", "B", 5);
+		 navigator.addConnection("A", "C", 3);
+		 navigator.addConnection("B", "D", 2);
+		 navigator.addConnection("C", "D", 1);
+		 navigator.addConnection("D", "E", 4);
+		 // Find shortest path
+		 List<String> shortestPath = navigator.findShortestPath("A", "E");
+		 System.out.println("Shortest path: " + shortestPath);
+		 }
+		}
+
+
